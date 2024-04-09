@@ -48,7 +48,7 @@ class Basketball {
   async insert(item) {
     try {
       let uid = uuidv4()
-      
+      let currentDate = moment().format('YYYY-MM-DD HH:mm:ss');
       let playerData = [
         uid,
         item.Name,
@@ -69,6 +69,8 @@ class Basketball {
         item.ThreePointersPercentage,
         item.DoubleDoubles + item.TripleDoubles,
         (item.FantasyPoints + item.FantasyPointsFanDuel + item.FantasyPointsDraftKings + item.FantasyPointsYahoo + item.FantasyPointsFantasyDraft) / 5,
+        currentDate,
+        currentDate 
       ]
       const query = `INSERT INTO player_data (
         uid,
@@ -89,9 +91,11 @@ class Basketball {
         three_point,
         three_point_percentage,
         dd,
-        average_fantasy_point
+        average_fantasy_point,
+        created_time,
+        updated_time
         )
-        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)`
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21)`
       
       await this.client.query(query, playerData)
     } catch (err) {

@@ -1,4 +1,4 @@
 # fantasy-game
 fantasy web scraping
-
-npm install #
+# crontab package
+npm install --save node-cron 

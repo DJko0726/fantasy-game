@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const Fantasy  = require('./app/fantasy/index');
 const fantasy = new Fantasy();
+require('./cron');
 
 app.use(bodyParser.json());
 

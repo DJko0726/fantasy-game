@@ -6,8 +6,6 @@ services:
       context: ./
       dockerfile: dockerfile
     image: fantasy/backend
-    depends_on:
-      - postgres-fantasyBK  
     environment:
       - DATABASE_URL=postgres://postgres:postgres@postgres-fantasyBK:5432/basketball
     volumes:
