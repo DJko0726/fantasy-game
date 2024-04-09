@@ -23,9 +23,6 @@ class Fantasy{
     // }
     
     async playerUpdate(season_year) {
-        if (!season_year) {
-            return { error: 'season_year 參數未提供' };
-        }
         let requestBody = {
             sort: 'FantasyPoints-desc',
             group: '',
@@ -67,7 +64,7 @@ class Fantasy{
                 }      
             }
         }
-        return ['success']
+        return [`${season_year} updated` ];
     }
 }
 module.exports = Fantasy;
