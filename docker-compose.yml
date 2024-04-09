@@ -2,7 +2,6 @@ version: '3'
 
 services:
   node-backend:
-    restart: always
     build:
       context: ./
       dockerfile: dockerfile
@@ -12,7 +11,7 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:postgres@postgres-fantasyBK:5432/basketball
     volumes:
-      - /home/koko/project/node-express:/app
+      - /home/koko/project/fantasy-game:/app
     ports:
       - 3000:3000
   

@@ -6,7 +6,7 @@ const Basketball = require('./../db/index');
 const basketball = new Basketball();
 const { v4 : uuidv4, v6 : uuidv6 }  = require('uuid');
 
-class fantasy{
+class Fantasy{
     constructor() {
         this.apiUrl = 'https://fantasydata.com/NBA_FantasyStats/FantasyStats_Read'
     }
@@ -23,6 +23,9 @@ class fantasy{
     // }
     
     async playerUpdate(season_year) {
+        if (!season_year) {
+            return { error: 'season_year 參數未提供' };
+        }
         let requestBody = {
             sort: 'FantasyPoints-desc',
             group: '',
@@ -67,3 +70,4 @@ class fantasy{
         return ['success']
     }
 }
+module.exports = Fantasy;
