@@ -2,8 +2,9 @@
 
 ## script
 1. cd ./app
-2. docker-compose -f docker-compose.yml up -d 
-3. docker-compose -f docker-compose.yml up -d 
+2. npm install 
+3. docker-compose -f docker-compose.yml kill
+4. docker-compose -f docker-compose.yml up -d 
 
 *check container is already started* 
 
