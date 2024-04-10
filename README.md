@@ -4,8 +4,10 @@ fantasy web scraping
 npm install --save node-cron 
 
 # script
-cd ./app
-docker-compose -f docker-compose.yml up -d //check container is already started 
+1. cd ./app
+2. docker-compose -f docker-compose.yml up -d 
+
+//check container is already started 
 
 # api
 1. POST http://127.0.0.1:3000/player-get //get player data

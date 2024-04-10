@@ -1,7 +1,6 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
-const Utility = require('./../utils/Utility');
 const Basketball = require('./../db/index');
 const basketball = new Basketball();
 const { v4 : uuidv4, v6 : uuidv6 }  = require('uuid');
