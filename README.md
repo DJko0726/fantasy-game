@@ -15,6 +15,7 @@
     request body = {
         "player":"Nikola Jokic"
     }
+
 2. POST http://127.0.0.1:3000/player-update 
 
 *update player data in db*
