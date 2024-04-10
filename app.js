@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 app.get('/',(req,res) =>{
     res.send('hello123')
 })
-
+//update player data into db
 app.post('/player-update', async(req,res) =>{
     try {
         const request = req.body;
@@ -19,7 +19,20 @@ app.post('/player-update', async(req,res) =>{
             throw new Error('Request season year is missing');
         }
         const result = await fantasy.playerUpdate(request.season_year);
-        res.status(200).json({ message: 'POST request received successfully', result});
+        res.status(200).json({ message: 'player-update request received successfully', result});
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
+//get one player data by years
+app.post('/player-get', async(req,res) =>{
+    try {
+        const request = req.body;
+        if (!request || !request.hasOwnProperty('player')) {
+            throw new Error('Request player is missing');
+        }
+        const result = await fantasy.playerGet(request.player);
+        res.status(200).json({ message: 'player-get request received successfully', result});
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

@@ -8,7 +8,7 @@ class Basketball {
   constructor() {
     this.client = new Client({
       user: 'postgres',
-      host: 'postgres-fantasyBK',
+      host: 'postgres-fantasyBK',//postgres-fantasyBK
       database: 'basketball',
       password: 'postgres',
       port: 5432,
@@ -35,13 +35,23 @@ class Basketball {
     }
   }
 
-  async selectOne(qWhere) {
+  async selectOneWithSeason(qWhere) {
     try {
       const query = 'SELECT * FROM player_data WHERE name = $1 AND season = $2';
       let result = await this.client.query(query, qWhere)
       return result.rows
     } catch (err) {
       console.error('Error executing SQL query:', err.message);
+    }
+  }
+
+  async selectOne(qWhere) {
+    try {
+      const query = 'SELECT * FROM player_data WHERE name = $1 order by season desc';
+      let result = await this.client.query(query, [qWhere.name])
+      return result.rows
+    } catch (err) {
+      return ['Error executing SQL query:', err.message];
     }
   }
 

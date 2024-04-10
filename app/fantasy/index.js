@@ -51,12 +51,11 @@ class Fantasy{
         let response = await axios.post(this.apiUrl,requestBody)
     
         let responseData = [response.data]
-    
+
         for (let dataObject of responseData) {
             for (let item of dataObject.Data) {
                 let qWhere = [item.Name,item.Season]
-                let playerCheck = await basketball.selectOne(qWhere)
-                // console.log(playerCheck)
+                let playerCheck = await basketball.selectOneWithSeason(qWhere)
                 if(playerCheck.length === 0){
                     await basketball.insert(item);
                 }else{
@@ -65,6 +64,21 @@ class Fantasy{
             }
         }
         return [`${season_year} updated` ];
+    }
+
+    async playerGet(player) {
+        let qWhere = { 'name': player }
+        let player_data = await basketball.selectOne(qWhere);
+        let player_result = []
+        player_data.forEach(function(player){
+            player_result.push({
+                name: player.name,
+                season: player.season
+            });
+        })
+        console.log(player_data)
+        process.exit()
+        return player_data
     }
 }
 module.exports = Fantasy;

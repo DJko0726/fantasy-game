@@ -1,7 +1,7 @@
 const cron = require('node-cron');
 const axios = require('axios');
 
-cron.schedule('*/10 * * * *', async () => {
+cron.schedule('* * */1 * *', async () => {
     try {
         const currentYear = new Date().getFullYear();
         const response = await axios.post('http://127.0.0.1:3000/player-update', {
