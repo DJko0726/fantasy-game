@@ -94,5 +94,14 @@ class Fantasy{
         })
         return player_result
     }
+
+
+    async playerList() {
+        let player_list = await basketball.selectAllPlayer()
+        const player_list_Array = player_list.map(item => item.name)
+        const player_list_Object = { player_name: player_list_Array }
+        return player_list_Object
+    }
+
 }
 module.exports = Fantasy;

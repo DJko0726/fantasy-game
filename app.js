@@ -37,6 +37,15 @@ app.post('/player-get', async(req,res) =>{
         res.status(500).json({ error: error.message });
     }
 })
+//get player list
+app.get('/player-list', async(req,res) =>{
+    try {
+        const result = await fantasy.playerList();
+        res.status(200).json({ message: 'player-list request received successfully', result});
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
 
 app.listen(3000, () =>{
     console.log('alive 3000 port')

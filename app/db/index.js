@@ -13,25 +13,17 @@ class Basketball {
       password: 'postgres',
       port: 5432,
     });
-    this.client.connect();
+    this.client.connect()
   }
 
-  async connect() {
-    try {
-      await this.client.connect();
-      console.log('Connected to PostgreSQL');
-    } catch (err) {
-      console.error('Error connecting to PostgreSQL:', err.message);
-    }
-  }
 
-  async select() {
+  async selectAllPlayer() {
     try {
-      await this.client.connect();
-      console.log('Connected to PostgreSQL');
-      // 在這裡添加你的 SQL 查詢邏輯
+      const query = 'SELECT name FROM player_data GROUP BY name';
+      let result = await this.client.query(query)
+      return result.rows
     } catch (err) {
-      console.error('Error executing SQL query:', err.message);
+      return ['Error executing SQL query:', err.message]
     }
   }
 
@@ -41,7 +33,7 @@ class Basketball {
       let result = await this.client.query(query, qWhere)
       return result.rows
     } catch (err) {
-      console.error('Error executing SQL query:', err.message);
+      return ['Error executing SQL query:', err.message]
     }
   }
 
@@ -51,7 +43,7 @@ class Basketball {
       let result = await this.client.query(query, [qWhere.name])
       return result.rows
     } catch (err) {
-      return ['Error executing SQL query:', err.message];
+      return ['Error executing SQL query:', err.message]
     }
   }
 
@@ -109,7 +101,7 @@ class Basketball {
       
       await this.client.query(query, playerData)
     } catch (err) {
-      console.error('Error executing SQL query:', err.message)
+      return ['Error executing SQL query:', err.message]
     }
   }
 
@@ -156,7 +148,7 @@ class Basketball {
       
       await this.client.query(query,  [...playerData,...[currentDate],...qWhere])
     } catch (err) {
-      console.error('Error executing SQL query:', err.message)
+      return ['Error executing SQL query:', err.message]
     }
   }
 }
