@@ -77,7 +77,7 @@ class Basketball {
         item.FreeThrowsPercentage,
         item.ThreePointersMade,
         item.ThreePointersPercentage,
-        item.DoubleDoubles + item.TripleDoubles,
+        item.DoubleDoubles,
         (item.FantasyPoints + item.FantasyPointsFanDuel + item.FantasyPointsDraftKings + item.FantasyPointsYahoo + item.FantasyPointsFantasyDraft) / 5,
         currentDate,
         currentDate 
@@ -131,7 +131,7 @@ class Basketball {
         item.FreeThrowsPercentage,
         item.ThreePointersMade,
         item.ThreePointersPercentage,
-        item.DoubleDoubles + item.TripleDoubles,
+        item.DoubleDoubles,
         (item.FantasyPoints + item.FantasyPointsFanDuel + item.FantasyPointsDraftKings + item.FantasyPointsYahoo + item.FantasyPointsFantasyDraft) / 5,
       ]
       const query = `UPDATE  player_data SET 

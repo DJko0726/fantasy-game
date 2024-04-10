@@ -69,16 +69,31 @@ class Fantasy{
     async playerGet(player) {
         let qWhere = { 'name': player }
         let player_data = await basketball.selectOne(qWhere);
+        if(player_data.length === 0){
+            return ['please search currect player name']
+        }
         let player_result = []
         player_data.forEach(function(player){
             player_result.push({
                 name: player.name,
-                season: player.season
+                season: player.season,
+                average_fantasy_point:player.average_fantasy_point,
+                position: player.position,
+                game_played: player.game_played,
+                point:player.point,
+                rebounds:player.rebounds,
+                assists:player.assists,
+                blocked:player.blocked,
+                steals:player.steals,
+                turnovers:player.turnovers,
+                fg_percentage:player.fg_percentage,
+                ft_percentage:player.ft_percentage,
+                three_point:player.three_point,
+                three_point_percentage:player.three_point_percentage,
+                dd:player.dd
             });
         })
-        console.log(player_data)
-        process.exit()
-        return player_data
+        return player_result
     }
 }
 module.exports = Fantasy;
