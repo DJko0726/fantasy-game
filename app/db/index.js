@@ -1,8 +1,8 @@
-const { Client } = require('pg');
-const { v4: uuidv4 ,v6: uuidv6} = require('uuid');
-const moment = require('moment-timezone');
+const { Client } = require('pg')
+const { v4: uuidv4 ,v6: uuidv6} = require('uuid')
+const moment = require('moment-timezone')
 
-moment.tz.setDefault('Asia/Taipei');
+moment.tz.setDefault('Asia/Taipei')
 class Basketball {
 
   constructor() {
@@ -12,14 +12,14 @@ class Basketball {
       database: 'basketball',
       password: 'postgres',
       port: 5432,
-    });
+    })
     this.client.connect()
   }
 
 
   async selectAllPlayer() {
     try {
-      const query = 'SELECT name FROM player_data GROUP BY name';
+      const query = 'SELECT name FROM player_data GROUP BY name'
       let result = await this.client.query(query)
       return result.rows
     } catch (err) {
@@ -29,8 +29,8 @@ class Basketball {
 
   async selectOneWithSeason(qWhere) {
     try {
-      const query = 'SELECT * FROM player_data WHERE name = $1 AND season = $2';
-      let result = await this.client.query(query, qWhere)
+      const query = 'SELECT * FROM player_data WHERE name = $1 AND season = $2'
+      let result = await this.client.query(query, [qWhere.name,qWhere.season])
       return result.rows
     } catch (err) {
       return ['Error executing SQL query:', err.message]
@@ -39,7 +39,7 @@ class Basketball {
 
   async selectOne(qWhere) {
     try {
-      const query = 'SELECT * FROM player_data WHERE name = $1 order by season desc';
+      const query = 'SELECT * FROM player_data WHERE name = $1 order by season desc'
       let result = await this.client.query(query, [qWhere.name])
       return result.rows
     } catch (err) {
@@ -50,7 +50,7 @@ class Basketball {
   async insert(item) {
     try {
       let uid = uuidv4()
-      let currentDate = moment().format('YYYY-MM-DD HH:mm:ss');
+      let currentDate = moment().format('YYYY-MM-DD HH:mm:ss')
       let playerData = [
         uid,
         item.Name,
@@ -107,7 +107,7 @@ class Basketball {
 
   async update(item,qWhere) {
     try {
-      let currentDate = moment().format('YYYY-MM-DD HH:mm:ss');
+      let currentDate = moment().format('YYYY-MM-DD HH:mm:ss')
       let playerData = [
         item.Team,
         item.Position,
@@ -153,4 +153,4 @@ class Basketball {
   }
 }
 
-module.exports = Basketball;
+module.exports = Basketball

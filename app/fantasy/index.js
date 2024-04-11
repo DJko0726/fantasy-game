@@ -1,14 +1,32 @@
-const axios = require('axios');
-const cheerio = require('cheerio');
-const puppeteer = require('puppeteer');
-const Basketball = require('./../db/index');
-const basketball = new Basketball();
-const { v4 : uuidv4, v6 : uuidv6 }  = require('uuid');
+const axios = require('axios')
+const cheerio = require('cheerio')
+const puppeteer = require('puppeteer')
+const Basketball = require('./../db/index')
+const basketball = new Basketball()
+const { v4 : uuidv4, v6 : uuidv6 }  = require('uuid')
 
 class Fantasy{
     constructor() {
         this.apiUrl = 'https://fantasydata.com/NBA_FantasyStats/FantasyStats_Read'
     }
+
+    async test(){
+        const data = {
+            name: 'John',
+            age: 30,
+            address: {
+              street: '123 Main St',
+              city: 'Anytown',
+              zip: '12345'
+            },
+            hobbies: ['reading', 'sports', 'cooking']
+          }
+        
+        console.dir(data)
+        process.exit()
+
+    }
+
     // async getData() {
 
     //     let browser = await puppeteer.launch({headless:false,args: ["--disable-notifications"]})
@@ -53,21 +71,22 @@ class Fantasy{
 
         for (let dataObject of responseData) {
             for (let item of dataObject.Data) {
-                let qWhere = [item.Name,item.Season]
+
+                let qWhere = { 'name': item.Name ,'season': item.Season}
                 let playerCheck = await basketball.selectOneWithSeason(qWhere)
                 if(playerCheck.length === 0){
-                    await basketball.insert(item);
+                    await basketball.insert(item)
                 }else{
-                    await basketball.update(item,qWhere);
+                    await basketball.update(item,qWhere)
                 }      
             }
         }
-        return [`${season_year} updated` ];
+        return [`${season_year} updated` ]
     }
 
     async playerGet(player) {
         let qWhere = { 'name': player }
-        let player_data = await basketball.selectOne(qWhere);
+        let player_data = await basketball.selectOne(qWhere)
         if(player_data.length === 0){
             return ['please search currect player name']
         }
@@ -104,4 +123,4 @@ class Fantasy{
     }
 
 }
-module.exports = Fantasy;
+module.exports = Fantasy
