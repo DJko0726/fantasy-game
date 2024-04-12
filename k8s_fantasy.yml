@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fantasy-backend
+  labels:
+    app: fantasy-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fantasy-service  
+  template:
+    metadata:
+      labels:
+        app: fantasy-service
+    spec:
+      containers:
+      - name: fantasy-service
+        image: fantasy/backend:latest
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: fantasy-service
+  labels:
+    app: fantasy-service
+spec:
+  type: NodePort
+  selector:
+    app: customer-service
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+    nodePort: 3000
