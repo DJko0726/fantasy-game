@@ -8,6 +8,7 @@
 4. nvm use 20.11.1
 5. npm install 
 6. docker-compose -f docker-compose.yml kill
+(change docker-compose node volume directory)
 7. docker-compose -f docker-compose.yml up -d 
 8. docker exec -it postgres-fantasyBK bash
 9. psql -U postgres
@@ -74,6 +75,16 @@ sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-a
 ### scirpt
 
 1. minikube start 
-2. eval $(minikube docker-env)
-3. docker build -t fantasy/backend:latest -f dockerfile .
-4. 
+2. sudo apt-get update
+3. sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+4. curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+5. echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+6. sudo apt-get update
+7. sudo apt-get install -y kubectl
+8. eval $(minikube docker-env)
+9. docker build -t fantasy/backend:latest -f dockerfile .
+10. kubectl delete -f your-deployment.yaml
+11.  kubectl apply -f your-deployment.yaml
+kubectl get pods(check status)
+kubectl get services
