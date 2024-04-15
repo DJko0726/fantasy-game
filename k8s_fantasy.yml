@@ -31,11 +31,11 @@ spec:
         volumeMounts:
         - name: backend
           mountPath: /app
-    volumes:
-    - name: backend
-      nfs:
-        server: 192.168.49.2
-        path: /home/koko/project/fantasy-game
+      volumes:
+        - name: backend
+          nfs:
+            server: 127.0.0.1
+            path: /home/koko/project/fantasy-game
 
 ---
 # Node Service 3000 -> pods 80
@@ -85,8 +85,13 @@ spec:
         - name: PGDATA
           value: /data/postgres
         volumeMounts:
-          - name: postgres-data
-            mountPath: /var/lib/docker/volumes/fantasy-game_postgres/_data
+        - name: postgres-data
+          mountPath: /data/postgres
+      volumes:
+        - name: postgres-data
+          nfs:
+            server: 127.0.0.1
+            path: /var/lib/docker/volumes/fantasy-game_postgres/_data
 ---
 # Postgres Service
 apiVersion: v1
@@ -101,3 +106,32 @@ spec:
     protocol: TCP
   selector:
     app: postgres-db
+---
+#pvc
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fantasy-game-postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 5Gi
+---
+#pv
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: fantasy-game-postgres-pv
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  hostPath:
+    path: /var/lib/docker/volumes/fantasy-game_postgres/_data
