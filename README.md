@@ -1,14 +1,14 @@
 # fantasy-game
 
-## script
+## script with docker
 1. cd ./app
 2. curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 3. export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm 
+
 4. nvm use 20.11.1
 5. npm install 
 6. docker-compose -f docker-compose.yml kill
-(change docker-compose node volume directory)
 7. docker-compose -f docker-compose.yml up -d 
 8. docker exec -it postgres-fantasyBK bash
 9. psql -U postgres
@@ -65,13 +65,31 @@ CREATE TABLE player_data (
 ## cronjob
 cron.js
 
-## minikube
+## minikube with nginx
 ### install
 
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+1. curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 
-sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
+2. sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-amd64
 
+3. sudo apt install nginx
+4. cd /etc/nginx/sites-available/
+5. sudo touch k8s-proxy
+6. vim k8s-proxy(replace 192.168.49.2 with minikube ip)
+ 
+        #fantasy_backend
+        server {
+            listen 80;
+            server_name fantasy_backend;
+
+            location / {
+                proxy_pass http://192.168.49.2:30001;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+            }
+        }
+    
+7. sudo service nginx restart
 ### scirpt
 
 1. minikube start 
@@ -87,5 +105,36 @@ sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-a
 10. kubectl delete -f your-deployment.yaml
 11. kubectl apply -f your-deployment.yaml
 12. kubectl get pods(check status)
-13. (http://127.0.0.1/) check if works
+13. kubectl exec -it postgres-fantasyBK-$podsNum bash
+14. psql -U postgres
+15. create database basketball;
+16. \c basketball
+17. 
+***
+CREATE TABLE player_data (
+    uid UUID  PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    season VARCHAR(4) NOT NULL,
+    team VARCHAR(10),
+    position VARCHAR(10),
+    game_played INTEGER,
+    game_started INTEGER,
+    point INTEGER,
+    rebounds INTEGER,
+    assists INTEGER,
+    blocked INTEGER,
+    steals INTEGER,
+    turnovers INTEGER,
+    fg_percentage FLOAT,
+    ft_percentage FLOAT,
+    three_point INTEGER,
+    three_point_percentage FLOAT,
+    dd INTEGER,
+    average_fantasy_point FLOAT,
+    created_time TIMESTAMP DEFAULT NOW(),
+    updated_time TIMESTAMP DEFAULT NOW()
+);
+***
+18. exit pods
+20. (http://127.0.0.1/) check if works
 
