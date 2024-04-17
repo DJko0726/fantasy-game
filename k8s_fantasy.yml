@@ -27,7 +27,7 @@ spec:
             memory: "1Gi"
             cpu: "500m"
         ports:
-        - containerPort: 80
+        - containerPort: 3000
       #   volumeMounts:
       #   - name: backend
       #     mountPath: /app
