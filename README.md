@@ -85,6 +85,7 @@ sudo install minikube-linux-amd64 /usr/local/bin/minikube && rm minikube-linux-a
 8. eval $(minikube docker-env)
 9. docker build -t fantasy/backend:latest -f dockerfile .
 10. kubectl delete -f your-deployment.yaml
-11.  kubectl apply -f your-deployment.yaml
-kubectl get pods(check status)
-kubectl get services
+11. kubectl apply -f your-deployment.yaml
+12. kubectl get pods(check status)
+13. (http://127.0.0.1/) check if works
+
