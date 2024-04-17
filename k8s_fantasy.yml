@@ -28,17 +28,17 @@ spec:
             cpu: "500m"
         ports:
         - containerPort: 80
-        volumeMounts:
-        - name: backend
-          mountPath: /app
-      volumes:
-        - name: backend
-          nfs:
-            server: 127.0.0.1
-            path: /home/koko/project/fantasy-game
+      #   volumeMounts:
+      #   - name: backend
+      #     mountPath: /app
+      # volumes:
+      #   - name: backend
+      #     hostPath:
+      #       path: /home/koko/project/fantasy-game
+      #       type: Directory
 
 ---
-# Node Service 3000 -> pods 80
+# Node Service 30001 -> pods 80
 apiVersion: v1
 kind: Service
 metadata:
@@ -50,10 +50,10 @@ spec:
   selector:
     app: fantasy-service #pods labels 
   ports:
-  - port: 80
+  - port: 3000
     protocol: TCP
-    targetPort: 80
-    nodePort: 30001 
+    targetPort: 3000
+    nodePort: 30001
 ---
 # Postgres Deployment
 apiVersion: apps/v1
@@ -89,9 +89,9 @@ spec:
           mountPath: /data/postgres
       volumes:
         - name: postgres-data
-          nfs:
-            server: 127.0.0.1
+          hostPath:
             path: /var/lib/docker/volumes/fantasy-game_postgres/_data
+            type: Directory
 ---
 # Postgres Service
 apiVersion: v1
