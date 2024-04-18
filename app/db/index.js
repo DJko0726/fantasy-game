@@ -8,7 +8,7 @@ class Basketball {
   constructor() {
     this.client = new Client({
       user: 'postgres',
-      host: 'postgres-service',//postgres-fantasyBK//postgres-service
+      host: 'postgres-service',//docker:postgres-fantasyBK//k8s:postgres-service
       database: 'basketball',
       password: 'postgres',
       port: 5432,
@@ -19,7 +19,17 @@ class Basketball {
 
   async selectAllPlayer() {
     try {
-      const query = 'SELECT name FROM player_data GROUP BY name'
+      const query = 'SELECT name FROM player_data GROUP BY name ORDER BY name ASC'
+      let result = await this.client.query(query)
+      return result.rows
+    } catch (err) {
+      return ['Error executing SQL query:', err.message]
+    }
+  }
+
+  async selectAllSeasonYear() {
+    try {
+      const query = 'SELECT season FROM player_data GROUP BY season ORDER BY season DESC'
       let result = await this.client.query(query)
       return result.rows
     } catch (err) {

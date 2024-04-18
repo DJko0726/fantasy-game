@@ -122,5 +122,12 @@ class Fantasy{
         return player_list_Object
     }
 
+    async seasonList() {
+        let season_list = await basketball.selectAllSeasonYear()
+        const season_list_Array = season_list.map(item => item.season)
+        const season_list_Object = { season_year: season_list_Array }
+        return season_list_Object
+    }
+
 }
 module.exports = Fantasy

@@ -8,8 +8,6 @@ services:
     image: fantasy/backend
     environment:
       - DATABASE_URL=postgres://postgres:postgres@postgres-fantasyBK:5432/basketball
-    volumes:
-      - node:/app
     ports:
       - 3000:3000
   
