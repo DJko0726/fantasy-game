@@ -28,14 +28,14 @@ spec:
             cpu: "500m"
         ports:
         - containerPort: 3000
-        volumeMounts:
-        - name: backend
-          mountPath: /app
-      volumes:
-        - name: backend
-          hostPath:
-            path: /var/lib/docker/volumes/fantasy-game_node/_data
-            type: Directory
+      #   volumeMounts:
+      #   - name: backend
+      #     mountPath: /app
+      # volumes:
+      #   - name: backend
+      #     hostPath:
+      #       path: /var/lib/docker/volumes/fantasy-game_node/_data
+      #       type: Directory
 
 ---
 # Node Service 30001 -> pods 80
