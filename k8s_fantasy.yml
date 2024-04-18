@@ -28,14 +28,14 @@ spec:
             cpu: "500m"
         ports:
         - containerPort: 3000
-      #   volumeMounts:
-      #   - name: backend
-      #     mountPath: /app
-      # volumes:
-      #   - name: backend
-      #     hostPath:
-      #       path: /home/koko/project/fantasy-game
-      #       type: Directory
+        volumeMounts:
+        - name: backend
+          mountPath: /app
+      volumes:
+        - name: backend
+          hostPath:
+            path: /var/lib/docker/volumes/fantasy-game_node/_data
+            type: Directory
 
 ---
 # Node Service 30001 -> pods 80
@@ -107,20 +107,20 @@ spec:
   selector:
     app: postgres-db
 ---
-#pvc
+#postgres-pvc
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: fantasy-game-postgres-pvc
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   storageClassName: manual
   resources:
     requests:
       storage: 5Gi
 ---
-#pv
+#postgres-pv
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -130,8 +130,37 @@ spec:
     storage: 5Gi
   volumeMode: Filesystem
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   storageClassName: manual
   hostPath:
     path: /var/lib/docker/volumes/fantasy-game_postgres/_data
+---
+#backend-pvc
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fantasy-game-backend-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 5Gi
+---
+#backend-pv
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: fantasy-game-backend-pv
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  hostPath:
+    path: /home/koko/project/fantasy-game
