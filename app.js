@@ -6,11 +6,16 @@ const Fantasy  = require('./app/fantasy/index')
 const fantasy = new Fantasy()
 require('./cron')
 
+app.use(express.static('public'));
 app.use(bodyParser.json())
 
 app.get('/',(req,res) =>{
-    res.send('hello123')
+    const data = {
+        message: 'Hello it works'
+      };
+    res.json(data);
 })
+
 //update player data into db
 app.post('/player-update', async(req,res) =>{
     try {
@@ -28,10 +33,10 @@ app.post('/player-update', async(req,res) =>{
 app.post('/player-get', async(req,res) =>{
     try {
         const request = req.body
-        if (!request || !request.hasOwnProperty('player')) {
-            throw new Error('Request player is missing')
+        if (!request || !request.hasOwnProperty('player') || !request.hasOwnProperty('season')) {
+            throw new Error('Request player or season is missing')
         }
-        const result = await fantasy.playerGet(request.player)
+        const result = await fantasy.playerGet(request.player,request.season)
         res.status(200).json({ message: 'player-get request received successfully', result})
     } catch (error) {
         res.status(500).json({ error: error.message })
@@ -56,6 +61,6 @@ app.get('/season-list', async(req,res) =>{
     }
 })
 
-app.listen(3000, () =>{
-    console.log('alive 3000 port')
+app.listen(3001, () =>{
+    console.log('alive 3001 port')
 })

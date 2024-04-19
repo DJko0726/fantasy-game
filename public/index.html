@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Basketball</title>
+    <style>
+        /* 添加您的 CSS 樣式 */
+    </style>
+</head>
+
+<body>
+    <!-- 選擇賽季 -->
+    <label for="select-season">選擇賽季：</label>
+    <select id="select-season"></select>
+    <button id="update-season">更新賽季資料</button>
+
+    <!-- 新增賽季 -->
+    <button id="insert-season">新增賽季資料</button>
+
+    <!-- 選擇球員 -->
+    <br>
+    <label for="select-player">選擇球員：</label>
+    <select id="select-player"></select>
+
+    <!-- 搜尋按鈕 -->
+    <br>
+    <button id="search-button">搜尋</button>
+
+    <script>
+        // 定義可用賽季
+        let availableSeasons = [];
+
+        // 加載賽季列表
+        fetch('/season-list')
+            .then(response => response.json())
+            .then(data => {
+                const selectSeasonElement = document.getElementById('select-season');
+                availableSeasons = data.result.season_year;
+                data.result.season_year.forEach(year => {
+                    const option = document.createElement('option');
+                    option.textContent = year;
+                    selectSeasonElement.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching season data:', error));
+
+        // 加載球員列表
+        fetch('/player-list')
+            .then(response => response.json())
+            .then(data => {
+                const selectPlayerElement = document.getElementById('select-player');
+                data.result.player_name.forEach(player => {
+                    const option = document.createElement('option');
+                    option.textContent = player;
+                    selectPlayerElement.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching player data:', error));
+
+        // 更新賽季按鈕點擊事件處理函式
+        document.getElementById('update-season').addEventListener('click', function () {
+            const selectedSeason = document.getElementById('select-season').value;
+
+            // 顯示訊息，表示正在更新資料
+            const loadingMessage = document.createElement('p');
+            loadingMessage.textContent = 'Updating data...';
+            document.body.appendChild(loadingMessage);
+
+            // 發送 POST 請求更新賽季資料
+            fetch('/player-update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    season_year: selectedSeason
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.body.removeChild(loadingMessage);
+                    alert('更新完成');
+                })
+                .catch(error => {
+                    document.body.removeChild(loadingMessage);
+                    console.error('Error updating:', error);
+                });
+        });
+
+        // 新增賽季按鈕點擊事件處理函式
+        document.getElementById('insert-season').addEventListener('click', function () {
+            const userInput = prompt('請輸入要新增的賽季');
+
+            // 如果用戶未取消輸入且輸入有效資料，則發送 POST 請求新增賽季
+            if (userInput !== null && !isNaN(userInput) && userInput >= 2000 && !availableSeasons.includes(userInput)) {
+                const loadingMessage = document.createElement('p');
+                loadingMessage.textContent = 'Inserting data...';
+                document.body.appendChild(loadingMessage);
+
+                fetch('/player-update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        season_year: userInput
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.body.removeChild(loadingMessage);
+                        alert(userInput + '賽季新增完成');
+                        location.reload(); // 重新加載頁面
+                    })
+                    .catch(error => {
+                        document.body.removeChild(loadingMessage);
+                        console.error('Error inserting:', error);
+                    });
+            } else {
+                alert('請輸入有效且未存在的賽季年份 (2000年之後)');
+            }
+        });
+
+        // 搜尋按鈕點擊事件處理函式
+        document.getElementById('search-button').addEventListener('click', function () {
+            const selectedSeason = document.getElementById('select-season').value;
+            const selectedPlayer = document.getElementById('select-player').value;
+
+            // 發送 POST 請求搜尋球員資料
+            fetch('/player-get', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    season: selectedSeason,
+                    player: selectedPlayer
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // 處理後端返回的搜尋結果
+                    console.log('Search result:', data);
+                })
+                .catch(error => console.error('Error searching:', error));
+        });
+
+    </script>
+</body>
+
+</html>
