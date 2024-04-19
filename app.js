@@ -42,9 +42,12 @@ app.post('/player-get', async(req,res) =>{
     }
 })
 //get player list
-app.get('/player-list', async(req,res) =>{
+app.post('/player-list', async(req,res) =>{
     try {
-        const result = await fantasy.playerList()
+        if (!request || !request.hasOwnProperty('season')) {
+            throw new Error('Request season is missing')
+        }
+        const result = await fantasy.playerList(request.season)
         res.status(200).json({ message: 'player-list request received successfully', result})
     } catch (error) {
         res.status(500).json({ error: error.message })
@@ -60,6 +63,6 @@ app.get('/season-list', async(req,res) =>{
     }
 })
 
-app.listen(3000, () =>{
-    console.log('alive 3000 port')
+app.listen(3001, () =>{
+    console.log('alive 3001 port')
 })

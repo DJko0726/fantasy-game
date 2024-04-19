@@ -98,8 +98,9 @@ class Fantasy{
     }
 
 
-    async playerList() {
-        let player_list = await basketball.selectAllPlayer()
+    async playerList(season) {
+        let qWhere = {'season': season}
+        let player_list = await basketball.selectAllPlayer(qWhere)
         const player_list_Array = player_list.map(item => item.name)
         const player_list_Object = { player_name: player_list_Array }
         return player_list_Object
