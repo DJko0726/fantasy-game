@@ -5,42 +5,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fantasy Basketball</title>
-    <style>
-
-    </style>
 </head>
 
 <body>
     <label for="select-season">選擇賽季：</label>
-    <select id="select-season"></select>
-    <button id="update-season">更新賽季資料</button>
+    <select id="select-season">
+        <option disabled selected>請選擇賽季</option>
+    </select>
 
     <button id="insert-season">新增賽季資料</button>
 
     <br>
     <label for="select-player">選擇球員：</label>
-    <select id="select-player"></select>
+    <select id="select-player">
+        <option disabled selected>請選擇球員</option>
+    </select>
 
     <br>
     <button id="search-button">搜尋</button>
-
+    <div id="search-result"></div>
     <script>
         let availableSeasons = []
+        const selectSeasonElement = document.getElementById('select-season')
 
         fetch('/season-list')
             .then(response => response.json())
             .then(data => {
-                const selectSeasonElement = document.getElementById('select-season')
                 availableSeasons = data.result.season_year
                 data.result.season_year.forEach(year => {
-                    const option = document.createElement('option')
-                    option.textContent = year;
+                    const option = new Option(year, year)
                     selectSeasonElement.appendChild(option)
                 })
             })
             .catch(error => console.error('Error fetching season data:', error))
 
-        document.getElementById('select-season').addEventListener('change', function () {
+        selectSeasonElement.addEventListener('change', function () {
             const selectedSeason = this.value;
             fetch('/player-list', {
                 method: 'POST',
@@ -54,50 +53,23 @@
                 .then(response => response.json())
                 .then(data => {
                     const selectPlayerElement = document.getElementById('select-player')
-                    selectPlayerElement.innerHTML = ''; // 清空球員列表
+                    selectPlayerElement.innerHTML = '' // 清空球員列表
 
                     data.result.player_name.forEach(player => {
-                        const option = document.createElement('option')
-                        option.textContent = player
+                        const option = new Option(player, player)
                         selectPlayerElement.appendChild(option)
-                    });
+                    })
                 })
                 .catch(error => {
                     console.error('Error loading:', error)
                 })
         })
 
-        document.getElementById('update-season').addEventListener('click', function () {
-            const selectedSeason = document.getElementById('select-season').value
-
-            const loadingMessage = document.createElement('p')
-            loadingMessage.textContent = 'Updating data...'
-            document.body.appendChild(loadingMessage)
-
-            fetch('/player-update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    season_year: selectedSeason
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    document.body.removeChild(loadingMessage);
-                    alert('更新完成');
-                })
-                .catch(error => {
-                    document.body.removeChild(loadingMessage);
-                    console.error('Error updating:', error);
-                });
-        });
-
         document.getElementById('insert-season').addEventListener('click', function () {
-            const userInput = prompt('請輸入要新增的賽季');
-
-            if (userInput !== null && !isNaN(userInput) && userInput >= 2000 && !availableSeasons.includes(userInput)) {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const userInput = prompt('請輸入要新增的賽季')
+            if (userInput !== null && userInput >= 2009 && userInput <= currentYear) {
                 const loadingMessage = document.createElement('p')
                 loadingMessage.textContent = 'Inserting data...'
                 document.body.appendChild(loadingMessage)
@@ -114,15 +86,15 @@
                     .then(response => response.json())
                     .then(data => {
                         document.body.removeChild(loadingMessage)
-                        alert(userInput + '賽季新增完成');
-                        location.reload(); // 重新加載頁面
+                        alert(userInput + '賽季新增完成')
+                        location.reload()// 重新加載頁面
                     })
                     .catch(error => {
                         document.body.removeChild(loadingMessage)
                         console.error('Error inserting:', error)
                     })
             } else {
-                alert('請輸入有效且未存在的賽季年份 (2000年之後)')
+                alert('請輸入有效且未存在的賽季年份 (2009年包含之後)')
             }
         })
 
@@ -142,7 +114,40 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log('Search result:', data)
+                    // 先確保有抓到資料
+                    if (data && data.result && data.result.length > 0) {
+                        const table = document.createElement('table')
+                        const tbody = document.createElement('tbody')
+
+                        // 創建表格內容
+                        data.result.forEach(item => {
+                            Object.entries(item).forEach(([key, value]) => {
+                                const row = document.createElement('tr')
+
+                                // 創建左邊的儲存格，放置鍵
+                                const keyCell = document.createElement('td')
+                                keyCell.textContent = key
+                                row.appendChild(keyCell)
+
+                                // 創建右邊的儲存格，放置值
+                                const valueCell = document.createElement('td')
+                                valueCell.textContent = value
+                                row.appendChild(valueCell)
+
+                                tbody.appendChild(row)
+                            })
+                        })
+                        table.appendChild(tbody)
+
+                        // 清空之前的搜索結果
+                        const searchResultContainer = document.getElementById('search-result')
+                        searchResultContainer.innerHTML = ''
+                        // 將表格添加到頁面中
+                        searchResultContainer.appendChild(table)
+                    } else {
+                        console.log('No search result found')
+                    }
+
                 })
                 .catch(error => console.error('Error searching:', error))
         })

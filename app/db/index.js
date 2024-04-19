@@ -8,7 +8,7 @@ class Basketball {
   constructor() {
     this.client = new Client({
       user: 'postgres',
-      host: 'postgres-fantasyBK',//docker:postgres-fantasyBK//k8s:postgres-service
+      host: '127.0.0.1',//docker:postgres-fantasyBK//k8s:postgres-service
       database: 'basketball',
       password: 'postgres',
       port: 5432,
