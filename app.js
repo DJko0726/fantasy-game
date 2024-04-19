@@ -1,20 +1,19 @@
 const express  = require('express')
 const app = express()
+const path = require('path');
 const bodyParser = require('body-parser')
 const { createProxyMiddleware } = require('http-proxy-middleware')
 const Fantasy  = require('./app/fantasy/index')
 const fantasy = new Fantasy()
 require('./cron')
 
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json())
 
-app.get('/',(req,res) =>{
-    const data = {
-        message: 'Hello it works'
-      };
-    res.json(data);
-})
+// 將根路由指向 public/index.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 //update player data into db
 app.post('/player-update', async(req,res) =>{
@@ -61,6 +60,6 @@ app.get('/season-list', async(req,res) =>{
     }
 })
 
-app.listen(3001, () =>{
-    console.log('alive 3001 port')
+app.listen(3000, () =>{
+    console.log('alive 3000 port')
 })
