@@ -34,45 +34,38 @@
                 availableSeasons = data.result.season_year
                 data.result.season_year.forEach(year => {
                     const option = document.createElement('option')
-                    option.textContent = year
+                    option.textContent = year;
                     selectSeasonElement.appendChild(option)
-                });
+                })
             })
             .catch(error => console.error('Error fetching season data:', error))
-        const selectedSeason = document.getElementById('select-season').value
-        fetch('/player-list', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                season: selectedSeason
+
+        document.getElementById('select-season').addEventListener('change', function () {
+            const selectedSeason = this.value;
+            fetch('/player-list', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    season: selectedSeason
+                })
             })
+                .then(response => response.json())
+                .then(data => {
+                    const selectPlayerElement = document.getElementById('select-player')
+                    selectPlayerElement.innerHTML = ''; // 清空球員列表
+
+                    data.result.player_name.forEach(player => {
+                        const option = document.createElement('option')
+                        option.textContent = player
+                        selectPlayerElement.appendChild(option)
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading:', error)
+                })
         })
-            .then(response => response.json())
-            .then(data => {
-                const selectPlayerElement = document.getElementById('select-player')
-                data.result.player_name.forEach(player => {
-                    const option = document.createElement('option')
-                    option.textContent = player;
-                    selectPlayerElement.appendChild(option)
-                });
-            })
-            .catch(error => {
-                console.error('Error loading:', error)
-            });
-        // // 加載球員列表
-        // fetch('/player-list')
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         const selectPlayerElement = document.getElementById('select-player');
-        //         data.result.player_name.forEach(player => {
-        //             const option = document.createElement('option');
-        //             option.textContent = player;
-        //             selectPlayerElement.appendChild(option);
-        //         });
-        //     })
-        //     .catch(error => console.error('Error fetching player data:', error));
 
         document.getElementById('update-season').addEventListener('click', function () {
             const selectedSeason = document.getElementById('select-season').value
@@ -105,9 +98,9 @@
             const userInput = prompt('請輸入要新增的賽季');
 
             if (userInput !== null && !isNaN(userInput) && userInput >= 2000 && !availableSeasons.includes(userInput)) {
-                const loadingMessage = document.createElement('p');
-                loadingMessage.textContent = 'Inserting data...';
-                document.body.appendChild(loadingMessage);
+                const loadingMessage = document.createElement('p')
+                loadingMessage.textContent = 'Inserting data...'
+                document.body.appendChild(loadingMessage)
 
                 fetch('/player-update', {
                     method: 'POST',
@@ -120,23 +113,23 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        document.body.removeChild(loadingMessage);
+                        document.body.removeChild(loadingMessage)
                         alert(userInput + '賽季新增完成');
                         location.reload(); // 重新加載頁面
                     })
                     .catch(error => {
-                        document.body.removeChild(loadingMessage);
-                        console.error('Error inserting:', error);
-                    });
+                        document.body.removeChild(loadingMessage)
+                        console.error('Error inserting:', error)
+                    })
             } else {
-                alert('請輸入有效且未存在的賽季年份 (2000年之後)');
+                alert('請輸入有效且未存在的賽季年份 (2000年之後)')
             }
-        });
+        })
 
         document.getElementById('search-button').addEventListener('click', function () {
-            const selectedSeason = document.getElementById('select-season').value;
-            const selectedPlayer = document.getElementById('select-player').value;
-    
+            const selectedSeason = document.getElementById('select-season').value
+            const selectedPlayer = document.getElementById('select-player').value
+
             fetch('/player-get', {
                 method: 'POST',
                 headers: {
@@ -149,10 +142,10 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log('Search result:', data);
+                    console.log('Search result:', data)
                 })
-                .catch(error => console.error('Error searching:', error));
-        });
+                .catch(error => console.error('Error searching:', error))
+        })
 
     </script>
 </body>

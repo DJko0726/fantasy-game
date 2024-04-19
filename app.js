@@ -44,6 +44,7 @@ app.post('/player-get', async(req,res) =>{
 //get player list
 app.post('/player-list', async(req,res) =>{
     try {
+        const request = req.body
         if (!request || !request.hasOwnProperty('season')) {
             throw new Error('Request season is missing')
         }
