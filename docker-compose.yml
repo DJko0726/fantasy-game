@@ -10,6 +10,8 @@ services:
       - DATABASE_URL=postgres://postgres:postgres@postgres-fantasyBK:5432/basketball
     ports:
       - 3000:3000
+    networks:
+      - fantasy
   
   postgres-fantasyBK:
     container_name: postgres-fantasyBK
@@ -22,8 +24,64 @@ services:
       - postgres:/data/postgres
     ports:
       - "5432:5432"
+    networks:
+      - fantasy
     restart: unless-stopped
     
+  es01:
+    container_name: es01
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.18
+    environment:
+      - node.name=es01
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=89787198
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.license.self_generated.type=basic 
+      - xpack.security.enabled=true 
+    volumes: 
+      - 'data01:/usr/share/elasticsearch/data'
+    ports:
+      - 9200:9200
+    networks:
+      - fantasy
+    healthcheck:
+      test: curl -s http://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+      interval: 30s
+      timeout: 10s
+      retries: 6 
+
+  # wait_until_ready:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.17.18
+  #   command: /usr/bin/true
+  #   depends_on: {"kibana01": {"condition": "service_healthy"}}
+  
+  kibana01:
+    container_name: kibana01
+    image: docker.elastic.co/kibana/kibana:7.17.18
+    environment:
+      - ELASTICSEARCH_HOSTS=http://10.0.2.15:9200
+      - XPACK_SECURITY_ENABLED=true
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD="89787198"
+    ports:
+      - 5601:5601
+    networks:
+      - fantasy
+    healthcheck:
+      test: curl -s http://localhost:5601 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+      interval: 30s
+      timeout: 10s
+      retries: 6
+
+networks:
+  fantasy:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.36.90.0/24
+
 volumes:
   postgres:
   node:
+  data01: {}
