@@ -124,7 +124,7 @@
                     .then(data => {
                         document.body.removeChild(loadingMessage)
                         alert(userInput + '賽季新增完成')
-                        location.reload()// 重新加載頁面
+                        location.reload()
                     })
                     .catch(error => {
                         document.body.removeChild(loadingMessage)
@@ -151,7 +151,7 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    // 先確保有抓到資料
+                    // 確保有抓到資料
                     if (data && data.result && data.result.length > 0) {
                         const table = document.createElement('table')
                         const tbody = document.createElement('tbody')
@@ -161,12 +161,12 @@
                             Object.entries(item).forEach(([key, value]) => {
                                 const row = document.createElement('tr')
 
-                                // 創建左邊的儲存格，放置鍵
+                                // 創建左邊的table
                                 const keyCell = document.createElement('td')
                                 keyCell.textContent = key
                                 row.appendChild(keyCell)
 
-                                // 創建右邊的儲存格，放置值
+                                // 創建右邊的value
                                 const valueCell = document.createElement('td')
                                 valueCell.textContent = value
                                 row.appendChild(valueCell)
@@ -176,10 +176,10 @@
                         })
                         table.appendChild(tbody)
 
-                        // 清空之前的搜索結果
+                        // 清空搜索結果
                         const searchResultContainer = document.getElementById('search-result')
                         searchResultContainer.innerHTML = ''
-                        // 將表格添加到頁面中
+
                         searchResultContainer.appendChild(table)
                     } else {
                         console.log('No search result found')
